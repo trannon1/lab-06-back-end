@@ -8,8 +8,6 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 app.use(cors());
 
-
-
 // Routes
 app.get('/location', (request, response) => {
   let city = request.query.data;
@@ -18,18 +16,18 @@ app.get('/location', (request, response) => {
 
   response.send(locationObj);
   console.log(location.Obj);
-})
+});
 
 app.get('/weather', (request, response) => {
-    let weather = request.query.data;
-    // let locationObj = searchLatToLong(city);
-    // if ((locationObj.latitude === weatherObj.latitude) && (locationObj.longitude === weatherObj.longitude)){
-        
-    // }
-    let weatherObj = searchForecast(weather);
-    response.send(weatherObj);
-    console.log(weather.Obj);
-  })
+  let weather = request.query.data;
+  // let locationObj = searchLatToLong(city);
+  // if ((locationObj.latitude === weatherObj.latitude) && (locationObj.longitude === weatherObj.longitude)){
+
+  // }
+  let weatherObj = searchForecast(weather);
+  response.send(weatherObj);
+  console.log(weather.Obj);
+})
 
 function searchLatToLong(city){
   const geoData = require('./data/geo.json');
@@ -42,11 +40,11 @@ function searchLatToLong(city){
 }
 
 function searchForecast(weather){
-    const geoData = require('./data/darksky.json');
+  const geoData = require('./data/darksky.json');
 
-    const weatherObj = new Weather(weather, geoData);
+  const weatherObj = new Weather(weather, geoData);
 
-    return weatherObj;
+  return weatherObj;
 }
 
 function Location(city, geoDataResults){
@@ -57,18 +55,17 @@ function Location(city, geoDataResults){
 }
 
 function Weather(weather, geoDataResults){
-    this.search_query = weather;
-    this.latitude = geoDataResults.latitude;
-    this.longitude = geoDataResults.longitude;
-    this.summary = geoDataResults.currently.summary;
-    this.time = geoDataResults.currently.time;
-    let date = new Date(this.time);
-    this.time = date.toString();
+  this.search_query = weather;
+  this.latitude = geoDataResults.latitude;
+  this.longitude = geoDataResults.longitude;
+  this.summary = geoDataResults.currently.summary;
+  this.time = geoDataResults.currently.time;
+  let date = new Date(this.time);
+  this.time = date.toString();
 }
 
 app.get('*', (request, response) => {
   response.status(404).send('Page not found');
-})
+});
 
-
-app.listen(PORT, () => console.log(`listening on port ${PORT}!`))
+app.listen(PORT, () => console.log(`listening on port ${PORT}!`));
