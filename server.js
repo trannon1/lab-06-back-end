@@ -20,21 +20,25 @@ app.get('/location', (request, response) => {
   console.log(location.Obj);
 })
 
+app.get('/location', (request, response) => {
+    let city = request.query.data;
+  
+    let locationObj = searchLatToLong(city);
+  
+    response.send(locationObj);
+    console.log(location.Obj);
+  })
+
 function searchLatToLong(city){
   const geoData = require('./data/geo.json');
 
-  const geoDataResults = geoData.results[0];
+  const geoDataResults = geoData.results[1];
 
   const locationObj = new Location(city, geoDataResults);
-  // const locationObj = {
-  //   "search_query": city,
-  //   "formatted_query": geoDataResults.formatted_address,
-  //   "latitude": geoDataResults.geometry.location.lat,
-  //   "longitude": geoDataResults.geometry.location.lng
-  // }
 
   return locationObj;
 }
+
 
 function Location(city, geoDataResults){
   this.search_query = city;
