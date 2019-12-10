@@ -24,18 +24,30 @@ This app uses cors, express, and dotenv as dependencies. The language used for c
 
 01-01-2001 4:59pm - Application now has a fully-functional express server, with a GET route for the location resource. -->
 
-12/10/2019 10:44pm - Application has been deployed to Heroku
+12/10/2019 10:44am - Application has been deployed to Heroku
+12/10/2019 11:10am - Functionality added to server.js for location search
+12/10/2019 11:46am - Functionality added to server.js for weather forecast
 
 ## Credits and Collaborations
 <!-- Give credit (and a link) to other people or resources that helped you build this application. -->
--->
 
-Number and name of feature: ________________________________
+Number and name of feature: Feature #1: Location Search
 
-Estimate of time needed to complete: _____
+Estimate of time needed to complete: 1 hours
 
-Start time: _____
+Start time: 10:44am
 
-Finish time: _____
+Finish time: 11:09am
 
-Actual time needed to complete: _____
+Actual time needed to complete: 24 minutes
+
+
+Number and name of feature: Feature #2: Weather Forecast
+
+Estimate of time needed to complete: 1 hours
+
+Start time: 11:09am
+
+Finish time: 11:45am
+
+Actual time needed to complete: 36 minutes
