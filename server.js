@@ -1,25 +1,51 @@
-'use strict'
+'use strict';
 
 const express = require('express');
-const app = express();
 require('dotenv').config();
+const cors = require('cors');
 
-const PORT = process.env.PORT;
+const app = express();
+const PORT = process.env.PORT || 3001;
+app.use(cors());
 
-app.use(express.static('./public'));
 
-// app.get('/', (request, response)=>{
-//     response.send('Hello from the back side');
-// })
 
-// app.get('/anime', (request, response) => {
-//     response.send('I like anime');
-// })
+// Routes
+app.get('/location', (request, response) => {
+  let city = request.query.data;
 
-app.get('*', (request, response) =>{
-    response.status(404).send("Page not found");
+  let locationObj = searchLatToLong(city);
+
+  response.send(locationObj);
+  console.log(location.Obj);
 })
 
-app.listen(PORT, ()=>{
-    console.log(`listening on ${PORT}`);
+function searchLatToLong(city){
+  const geoData = require('./data/geo.json');
+
+  const geoDataResults = geoData.results[0];
+
+  const locationObj = new Location(city, geoDataResults);
+  // const locationObj = {
+  //   "search_query": city,
+  //   "formatted_query": geoDataResults.formatted_address,
+  //   "latitude": geoDataResults.geometry.location.lat,
+  //   "longitude": geoDataResults.geometry.location.lng
+  // }
+
+  return locationObj;
+}
+
+function Location(city, geoDataResults){
+  this.search_query = city;
+  this.formatted_query = geoDataResults.formatted_address;
+  this.latitude = geoDataResults.geometry.location.lat;
+  this.longitude = geoDataResults.geometry.location.lng;
+}
+
+app.get('*', (request, response) => {
+  response.status(404).send('Page not found');
 })
+
+
+app.listen(PORT, () => console.log(`listening on port ${PORT}!`))
