@@ -32,7 +32,7 @@ app.get('/weather', (request, response) => {
 function searchLatToLong(city){
   const geoData = require('./data/geo.json');
 
-  const geoDataResults = geoData.results;
+  const geoDataResults = geoData.results[0];
 
   const locationObj = new Location(city, geoDataResults);
 
