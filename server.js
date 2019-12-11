@@ -12,7 +12,6 @@ app.use(cors());
 // routes
 app.get('/location', (request, response) => {
   try{
-    console.log("abc");
     searchLatToLong(request, response);
   }
   catch(error){
@@ -38,7 +37,7 @@ function searchLatToLong(request, response){
   superagent.get(url)
     .then(results => {
       
-      console.log(results.body)
+      // console.log(results.body)
       const locationObject = new Location(request.query.data, results.body.results[0]);
 
       console.log(locationObject)
