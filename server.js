@@ -21,18 +21,18 @@ app.get('/location', (request, response) => {
   }
 })
 
-app.get('/weather', (request, response) => {
-  console.log('I am the weather route ', request.query.data);
-  let latitude = request.query.data.latitude;
-  let longitude = request.query.data.longitude;
+// app.get('/weather', (request, response) => {
+//   console.log('I am the weather route ', request.query.data);
+//   let latitude = request.query.data.latitude;
+//   let longitude = request.query.data.longitude;
 
-  const url = `https://api.darksky.net/forecast/${DARKSKYKEY}/${latitude},${longitude}`
+//   const url = `https://api.darksky.net/forecast/${DARKSKYKEY}/${latitude},${longitude}`
 
-  superagent.get(url)
-  .then(results => {
-    response.send(results.body);
-  });
-})
+//   superagent.get(url)
+//   .then(results => {
+//     response.send(results.body);
+//   });
+// })
 
 function searchLatToLong(request, response){
   // const geoData = require('./data/geo.json');
@@ -48,23 +48,18 @@ function searchLatToLong(request, response){
       // console.log(results.body)
       const locationObject = new Location(request.query.data, results.body.results[0]);
 
-      console.log(locationObject)
+      // console.log(locationObject)
       response.send(locationObject);
     
     });
 }
 
-// function getWeather(weather){
-//   console.log('I am the weather route ', request.query.data);
-//   let latitude = request.query.data.latitude;
-//   let longitude = request.query.data.longitude;
+// function searchForecast(weather){
+//   const geoData = require('./data/darksky.json');
 
-//   const url = `https://api.darksky.net/forecast/${DARKSKYKEY}/${latitude},${longitude}`
+//   const weatherObj = new Weather(weather, geoData);
 
-//   superagent.get(url)
-//   .then(results => {
-//     response.send(results.body);
-//   });
+//   return weatherObj;
 // }
 
 function Location(request, geoData){
