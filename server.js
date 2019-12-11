@@ -21,10 +21,13 @@ app.get('/location', (request, response) => {
   }
 })
 
-// app.get('/weather', (request, response) => {
-//   console.log('I am the weather route ', request.query.data);
+app.get('/weather', (request, response) => {
+  console.log('I am the weather route ', request.query.data);
+  let latitude = request.query.data.latitude;
+  let longitude = request.query.data.longitude;
 
-// })
+  const
+})
 
 function searchLatToLong(request, response){
   // const geoData = require('./data/geo.json');
@@ -46,13 +49,18 @@ function searchLatToLong(request, response){
     });
 }
 
-// function searchForecast(weather){
-//   const geoData = require('./data/darksky.json');
+function getWeather(weather){
+  console.log('I am the weather route ', request.query.data);
+  let latitude = request.query.data.latitude;
+  let longitude = request.query.data.longitude;
 
-//   const weatherObj = new Weather(weather, geoData);
+  const url = `https://api.darksky.net/forecast/${DARKSKYKEY}/${latitude},${longitude}`
 
-//   return weatherObj;
-// }
+  superagent.get(url)
+  .then(results => {
+    response.send(results.body);
+  });
+}
 
 function Location(request, geoData){
   this.search_query = request;
