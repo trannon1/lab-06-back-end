@@ -12,6 +12,7 @@ app.use(cors());
 // routes
 app.get('/location', (request, response) => {
   try{
+    console.log("abc");
     searchLatToLong(request, response);
   }
   catch(error){
@@ -23,15 +24,7 @@ app.get('/location', (request, response) => {
 
 // app.get('/weather', (request, response) => {
 //   console.log('I am the weather route ', request.query.data);
-//   let latitude = request.query.data.latitude;
-//   let longitude = request.query.data.longitude;
 
-//   const url = `https://api.darksky.net/forecast/${DARKSKYKEY}/${latitude},${longitude}`
-
-//   superagent.get(url)
-//   .then(results => {
-//     response.send(results.body);
-//   });
 // })
 
 function searchLatToLong(request, response){
