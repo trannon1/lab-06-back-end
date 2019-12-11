@@ -21,18 +21,17 @@ app.get('/location', (request, response) => {
   }
 })
 
-// app.get('/weather', (request, response) => {
-//   console.log('I am the weather route ', request.query.data);
-//   let latitude = request.query.data.latitude;
-//   let longitude = request.query.data.longitude;
+app.get('/weather', (request, response) => {
+  try{
+    getWeather(request, response);
+    // searchForecast(request.query.data);
+  }
+  catch(error){
+    console.error(error); // will turn the error message red if the environment supports it
 
-//   const url = `https://api.darksky.net/forecast/${DARKSKYKEY}/${latitude},${longitude}`
-
-//   superagent.get(url)
-//   .then(results => {
-//     response.send(results.body);
-//   });
-// })
+    response.status(500).send('so sorry, something is not working on our end');
+  }
+})
 
 function searchLatToLong(request, response){
   // const geoData = require('./data/geo.json');
@@ -40,7 +39,7 @@ function searchLatToLong(request, response){
   // console.log(city);
 
   let url = `https://maps.googleapis.com/maps/api/geocode/json?address=${request.query.data}&key=${process.env.GEOKEY}`;
-  console.log(url);
+  // console.log(url);
 
   superagent.get(url)
     .then(results => {
@@ -51,16 +50,48 @@ function searchLatToLong(request, response){
       // console.log(locationObject)
       response.send(locationObject);
     
-    });
+    })
+    .catch (err => {
+      response.send(err);
+    })
 }
 
 // function searchForecast(weather){
-//   const geoData = require('./data/darksky.json');
+//   const weatherData = require('./data/darksky.json');
 
-//   const weatherObj = new Weather(weather, geoData);
+//   const weatherObj = weatherData.daily.map((data) => {
+//     this.summary = data.summary;
+//     this.time = data.time;
+//     let date = new Date(this.time);
+//     this.time = date.toString();
+//   });
+
+//   console.log(weatherObj);
 
 //   return weatherObj;
 // }
+
+function getWeather(request, response){
+  // console.log("This is the weather route ", request.query.data);
+  let latitude = request.query.data.latitude;
+  let longitude = request.query.data.longitude;
+
+  let url =  `https://api.darksky.net/forecast/${process.env.DARKSKYKEY}/${latitude},${longitude}`;
+
+  return superagent.get(url)
+  .then(results => {
+    const weatherObject = results.body.daily.data.map(data => {
+      return new Weather(data);
+    })
+
+    console.log(url);
+    console.log(weatherObject);
+    response.send(weatherObject);
+  })
+  .catch (err =>{
+    response.send(err);
+  })
+}
 
 function Location(request, geoData){
   this.search_query = request;
@@ -69,15 +100,12 @@ function Location(request, geoData){
   this.longitude = geoData.geometry.location.lng;
 }
 
-// function Weather(weather, geoDataResults){
-//   this.search_query = weather;
-//   this.latitude = geoDataResults.latitude;
-//   this.longitude = geoDataResults.longitude;
-//   this.summary = geoDataResults.currently.summary;
-//   this.time = geoDataResults.currently.time;
-//   let date = new Date(this.time);
-//   this.time = date.toString();
-// }
+function Weather(weather, weatherData){
+  this.summary = weatherData.currently.summary;
+  // this.time = weatherData.currently.time;
+  // let date = new Date(this.time);
+  // this.time = date.toString();
+}
 
 app.get('*', (request, response) => {
   response.status(404).send('Page not found');
