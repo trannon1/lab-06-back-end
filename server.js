@@ -78,13 +78,17 @@ function getWeather(request, response){
 
   let url =  `https://api.darksky.net/forecast/${process.env.DARKSKYKEY}/${latitude},${longitude}`;
 
-  return superagent.get(url)
+  superagent.get(url)
   .then(results => {
-    const weatherObject = results.body.daily.data.map(data => {
-      return new Weather(data);
-    })
-
-    console.log(url);
+    // weather = results.body.daily.data;
+    const weatherObject = results.body.daily.data.map(values => 
+      // console.log(values.summary);
+      // console.log(url);
+      // console.log(data);
+      new Weather(values.summary, values.time)
+    )
+    // console.log(results);
+    // console.log(url);
     console.log(weatherObject);
     response.send(weatherObject);
   })
@@ -100,11 +104,13 @@ function Location(request, geoData){
   this.longitude = geoData.geometry.location.lng;
 }
 
-function Weather(weather, weatherData){
-  this.summary = weatherData.currently.summary;
-  // this.time = weatherData.currently.time;
-  // let date = new Date(this.time);
-  // this.time = date.toString();
+function Weather(summary, time){
+  // console.log(weatherData);\
+  // console.log(summary);
+  this.summary = summary; // code breaking here
+  // console.log(this.summary);
+  this.time = new Date(time).toString();
+  // console.log(this.time);
 }
 
 app.get('*', (request, response) => {
