@@ -7,7 +7,10 @@ const cors = require('cors');
 const app = express();
 const superagent = require('superagent');
 const PORT = process.env.PORT || 3001;
+const jsdom = require('jsdom');
+const { JSDOM } = jsdom;
 app.use(cors());
+// let parser = new DOMParser();
 
 // routes
 app.get('/location', (request, response) => {
@@ -23,7 +26,23 @@ app.get('/location', (request, response) => {
 
 app.get('/weather', (request, response) => {
   try{
+    // console.log(request);
     getWeather(request, response);
+    // searchForecast(request.query.data);
+    // console.log("abc");
+  }
+  catch(error){
+    console.error(error); // will turn the error message red if the environment supports it
+
+    response.status(500).send('so sorry, something is not working on our end');
+  }
+})
+
+app.get('/events', (request, response) => {
+  try{
+    // console.log(request);
+    // console.log("abc");
+    getEvent(request, response);
     // searchForecast(request.query.data);
   }
   catch(error){
@@ -56,25 +75,12 @@ function searchLatToLong(request, response){
     })
 }
 
-// function searchForecast(weather){
-//   const weatherData = require('./data/darksky.json');
-
-//   const weatherObj = weatherData.daily.map((data) => {
-//     this.summary = data.summary;
-//     this.time = data.time;
-//     let date = new Date(this.time);
-//     this.time = date.toString();
-//   });
-
-//   console.log(weatherObj);
-
-//   return weatherObj;
-// }
-
 function getWeather(request, response){
   // console.log("This is the weather route ", request.query.data);
   let latitude = request.query.data.latitude;
   let longitude = request.query.data.longitude;
+  // console.log(latitude);
+  // console.log(longitude);
 
   let url =  `https://api.darksky.net/forecast/${process.env.DARKSKYKEY}/${latitude},${longitude}`;
 
@@ -82,15 +88,41 @@ function getWeather(request, response){
   .then(results => {
     // weather = results.body.daily.data;
     const weatherObject = results.body.daily.data.map(values => 
-      // console.log(values.summary);
-      // console.log(url);
-      // console.log(data);
       new Weather(values.summary, values.time)
     )
     // console.log(results);
     // console.log(url);
-    console.log(weatherObject);
+    // console.log(weatherObject);
     response.send(weatherObject);
+  })
+  .catch (err =>{
+    response.send(err);
+  })
+}
+
+function getEvent(request, response){
+  // console.log("This is the weather route ", request.query.data);
+  let latitude = request.query.data.latitude;
+  let longitude = request.query.data.longitude;
+
+  let url =  `http://api.eventful.com/json/events/search?app_key=${process.env.EVENTBRITEKEY}&where=${latitude},${longitude}`;
+
+  superagent.get(url)
+  .then(results => {
+    let events = JSON.parse(results.text);
+    const eventObject = events.events.event.map(value => 
+      new Event(value)
+    )
+
+    // console.log("abc");
+    // console.log(events.events.event);
+    // const eventObject = results.body.map(values => 
+    //   new Event()
+    // )
+    // console.log(results);
+    // console.log(url);
+    // console.log(eventObject);
+    response.send(eventObject);
   })
   .catch (err =>{
     response.send(err);
@@ -105,12 +137,17 @@ function Location(request, geoData){
 }
 
 function Weather(summary, time){
-  // console.log(weatherData);\
-  // console.log(summary);
-  this.summary = summary; // code breaking here
-  // console.log(this.summary);
-  this.time = new Date(time).toString();
-  // console.log(this.time);
+  this.forecast = summary;
+  this.time = new Date(time * 1000).toDateString();
+}
+
+function Event(value){
+  // console.log("abc");
+  this.link = value.url;
+  // console.log("abc");
+  this.name = value.title;
+  this.event_date = value.start_time;
+  this.summary = value.description;
 }
 
 app.get('*', (request, response) => {
